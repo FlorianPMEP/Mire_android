@@ -1,0 +1,12 @@
+<!-- res/values/styles.xml -->
+<resources>
+    <!-- Base application theme -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="toolbarStyle">@style/CustomToolbar</item>
+        <item name="android:statusBarColor">@color/rowblue</item>
+    </style>
+
+    <!-- Style for the toolbar -->
+    <style name="CustomToolbar" parent="Widget.AppCompat.Toolbar">
+    </style>
+</resources>
