@@ -30,4 +30,7 @@ object RetrofitClient {
             .client(client)
             .build()
     }
+    fun createPersonsService(context: Context): PersonsService {
+        return create(context).create(PersonsService::class.java)
+    }
 }
