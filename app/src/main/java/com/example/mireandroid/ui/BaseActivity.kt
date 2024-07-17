@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -48,6 +49,7 @@ open class BaseActivity : AppCompatActivity() {
     lateinit var rightDrawer: NavigationView
 
     private val REQUEST_READ_PHONE_STATE = 1
+    private val REQUEST_POST_NOTIFICATIONS = 123
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,12 +59,7 @@ open class BaseActivity : AppCompatActivity() {
         initializeUI()
 
         // Demander les permissions
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CALL_LOG),
-                REQUEST_READ_PHONE_STATE)
-        }
+        requestPermissions()
     }
 
     private fun initializeUI() {
@@ -74,11 +71,33 @@ open class BaseActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        userViewModel.user.observe(this, Observer { user ->
+        userViewModel.user.observe(this) { user ->
             if (user != null) {
                 setupToolbarButtons(this, toolbar, user)
             }
-        })
+        }
+    }
+
+    private fun requestPermissions() {
+        val permissionsNeeded = mutableListOf<String>()
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.READ_PHONE_STATE)
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+            permissionsNeeded.add(Manifest.permission.READ_CALL_LOG)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                permissionsNeeded.add(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
+        if (permissionsNeeded.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, permissionsNeeded.toTypedArray(), REQUEST_READ_PHONE_STATE)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -88,6 +107,14 @@ open class BaseActivity : AppCompatActivity() {
                 // Permission granted
             } else {
                 // Permission denied
+                Toast.makeText(this, "Les permissions sont nécessaires pour le bon fonctionnement de l'application.", Toast.LENGTH_LONG).show()
+            }
+        } else if (requestCode == REQUEST_POST_NOTIFICATIONS) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                // Permission for notifications granted
+            } else {
+                // Permission for notifications denied
+                Toast.makeText(this, "Les notifications ne seront pas affichées sans permission.", Toast.LENGTH_LONG).show()
             }
         }
     }
