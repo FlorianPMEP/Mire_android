@@ -6,11 +6,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.mireandroid.BuildConfig
+import com.google.gson.GsonBuilder
 
 val Context.dataStore by preferencesDataStore("settings")
 
 object RetrofitClient {
-    private const val BASE_URL = "https://api.dev-rose-pmep.fr/api/"
+    private const val BASE_URL = BuildConfig.BASE_URL
 
     fun create(context: Context): Retrofit {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
@@ -23,6 +25,7 @@ object RetrofitClient {
             .addInterceptor(loggingInterceptor)
             .addInterceptor(tokenInterceptor)
             .build()
+
 
         return Retrofit.Builder()
             .baseUrl(BASE_URL)

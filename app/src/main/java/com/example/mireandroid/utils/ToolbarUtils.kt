@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.example.mireandroid.BuildConfig
 import com.example.mireandroid.R
 import com.example.mireandroid.api.User
 import com.example.mireandroid.ui.LoginActivity
@@ -21,7 +22,7 @@ fun setupToolbarButtons(context: Context, toolbarView: View, user: User) {
 
     Log.d("User", user.toString())
 
-    val profilePictureUrl = "https://api.dev-rose-pmep.fr/storage/" + user.profile_picture.file_path
+    val profilePictureUrl = BuildConfig.BASE_URL_STORAGE + user.profile_picture.file_path
     Log.d("User", profilePictureUrl)
 
     Glide.with(context)

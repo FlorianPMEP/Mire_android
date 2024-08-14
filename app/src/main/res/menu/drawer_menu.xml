@@ -4,6 +4,15 @@
         android:id="@+id/nav_home"
         android:title="Accueil" />
     <item
-        android:id="@+id/nav_profile"
-        android:title="Profil" />
+        android:id="@+id/nav_contacts"
+        android:title="Contacts" />
+    <item
+        android:id="@+id/nav_organisations"
+        android:title="Organisations" />
+    <item
+        android:id="@+id/nav_dossiers"
+        android:title="Dossiers" />
+    <item
+        android:id="@+id/nav_dialer"
+        android:title="Dialer" />
 </menu>

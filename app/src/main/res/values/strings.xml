@@ -3,4 +3,6 @@
     <string name="launch_screen_subtitle">An app by PMEPartner</string>
     <string name="mire_logo">MIRE Logo</string>
     <string name="welcome_to_mire">Welcome to MIRE</string>
+    <string name="d_connexion">Déconnexion</string>
+    <string name="photo_de_profil">Photo de profil</string>
 </resources>

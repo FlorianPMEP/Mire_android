@@ -28,6 +28,7 @@ class HomeActivity : BaseActivity() {
 
     private val userViewModel: UserViewModel by viewModels()
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setLayout(R.layout.activity_home)
@@ -40,6 +41,11 @@ class HomeActivity : BaseActivity() {
         userViewModel.user.observe(this, Observer { user ->
             if (user != null) {
                 setupToolbarButtons(this, toolbar, user)
+                val welcomeTextView: TextView = findViewById(R.id.welcomeTextView)
+                val name = user.name.split(" ")[0]
+                welcomeTextView.text = "$name, bienvenue sur Mire"
+                welcomeTextView.setTextColor(Color.parseColor("#bbbbbb"))
+
             }
             user?.let {
                 updateDossiers(it)
@@ -47,35 +53,6 @@ class HomeActivity : BaseActivity() {
         })
 
         getMyInfos()
-    }
-
-    private fun getMyInfos() {
-        val usersService = RetrofitClient.create(this).create(UsersService::class.java)
-        val call = usersService.getMyUserInfo()
-
-        call.enqueue(object : Callback<User> {
-            @SuppressLint("SetTextI18n")
-            override fun onResponse(call: Call<User>, response: Response<User>) {
-                if (response.isSuccessful) {
-                    val user = response.body()
-                    Log.d("authUser", user.toString())
-
-                    val welcomeTextView: TextView = findViewById(R.id.welcomeTextView)
-                    val name = user?.name?.split(" ")?.get(0)
-                    welcomeTextView.text = "$name, bienvenue sur Mire"
-                    welcomeTextView.setTextColor(Color.parseColor("#bbbbbb"))
-
-                    // Update the ViewModel
-                    userViewModel.setUser(user)
-                } else {
-                    Log.e("authUser", "Erreur lors de la récupération de l'utilisateur")
-                }
-            }
-
-            override fun onFailure(call: Call<User>, t: Throwable) {
-                Log.e("authUser", "Échec de la requête", t)
-            }
-        })
     }
 
     private fun updateDossiers(user: User) {

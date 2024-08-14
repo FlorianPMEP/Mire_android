@@ -6,6 +6,8 @@ plugins {
 
 val googleWebKey: String = project.findProperty("GOOGLE_WEB_API") as String
 val googleWebClient: String = project.findProperty("GOOGLE_CLIENT_SECRET") as String
+val baseUrl: String = project.findProperty("BASE_URL") as String
+val baseUrlStorage: String = project.findProperty("BASE_URL_STORAGE") as String
 
 fun Project.getGoogleWebApiKey(): String {
     return findProperty("GOOGLE_WEB_API") as String
@@ -23,6 +25,8 @@ android {
         versionName = "1.0"
         buildConfigField("String", "GOOGLE_WEB_API_KEY", "\"$googleWebKey\"")
         buildConfigField("String", "GOOGLE_CLIENT_SECRET", "\"$googleWebClient\"")
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        buildConfigField("String", "BASE_URL_STORAGE", "\"$baseUrlStorage\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -30,14 +34,32 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = "keyRelease01"
+            keyPassword = "PmepBdx2023!"
+            storeFile = file("C:/Users/Florian/keystores/upload_keystore_release_01.jks")
+            storePassword = "PmepBdx2023!"
+        }
+    }
+
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://api.dev-rose-pmep.fr/api/\"")
+            buildConfigField("String", "BASE_URL_STORAGE", "\"https://api.dev-rose-pmep.fr/storage/\"")
+            signingConfig = signingConfigs.getByName("debug")
+        }
         release {
+            buildConfigField("String", "BASE_URL", "\"https://api.rose-pmep.fr/api/\"")
+            buildConfigField("String", "BASE_URL_STORAGE", "\"https://api.rose-pmep.fr/storage/\"")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
+
     }
 
     compileOptions {
@@ -52,6 +74,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        viewBinding = true
     }
 
     composeOptions {
@@ -119,4 +142,7 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.8.3")
 
     implementation ("com.google.android.material:material:1.12.0")
+
+    implementation ("androidx.recyclerview:recyclerview:1.2.1")
+
 }
